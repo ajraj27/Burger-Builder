@@ -12,7 +12,7 @@ class Layout extends Component{
           <Toolbar />
           <Sidedrawer />
           <main className={classes.Content}>
-              {props.children}
+              {this.props.children}
           </main>
       </Aux>
     )
