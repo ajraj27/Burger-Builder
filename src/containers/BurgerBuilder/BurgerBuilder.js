@@ -22,12 +22,14 @@ class BurgerBuilder extends Component{
     totalPrice:4,
     purchasable:false,
     purchasing:false,
-    loading:false
+    loading:false,
+    error:false
   }
 
   componentDidMount=() => {
     axios.get('https://react-burger-builder-2903.firebaseio.com/ingredients.json')
     .then((res) => this.setState({ingredients:res.data}))
+    .catch((err) => this.setState({error:true}))
   }
 
   updatePurchasableHandler=(ingredients) => {
@@ -91,25 +93,26 @@ class BurgerBuilder extends Component{
 
   continueOrderHandler=() => {
     //alert("Continue Order!!");
-    this.setState({loading:true});
-    const order={
-      ingredients:this.state.ingredients,
-      totalPrice:this.state.totalPrice,
-      customer:{
-        name:'Anuj',
-        address:{
-          street:'IIIT Road',
-          zipcode:211015,
-          country:'India'
-        },
-        email:'test@gmail.com'
-      },
-      delivery:'fastest'
-    }
+    // this.setState({loading:true});
+    // const order={
+    //   ingredients:this.state.ingredients,
+    //   totalPrice:this.state.totalPrice,
+    //   customer:{
+    //     name:'Anuj',
+    //     address:{
+    //       street:'IIIT Road',
+    //       zipcode:211015,
+    //       country:'India'
+    //     },
+    //     email:'test@gmail.com'
+    //   },
+    //   delivery:'fastest'
+    // }
 
-    axios.post('/orders.json',order)
-    .then((res) => this.setState({loading:false,purchasing:false}))
-    .catch((err) => this.setState({loading:false,purchasing:false}));
+    // axios.post('/orders.json',order)
+    // .then((res) => this.setState({loading:false,purchasing:false}))
+    // .catch((err) => this.setState({loading:false,purchasing:false}));
+    this.props.history.push('/checkout');
   }
 
 
@@ -119,7 +122,7 @@ class BurgerBuilder extends Component{
       disabledInfo[key]=disabledInfo[key] <= 0;
     }
 
-    let burger=<Spinner />;
+    let burger=this.state.error?<p>Ingredients cant be loaded</p>:<Spinner />;
     let orderSummary=null;
 
     if(this.state.ingredients){
