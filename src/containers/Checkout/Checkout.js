@@ -20,6 +20,17 @@ class Checkout extends Component{
         this.props.history.goBack();
     }
 
+    componentDidMount(){
+        const params= new URLSearchParams(this.props.location.search);
+        const ingredients={};
+        console.log(params.entries());
+        for(let param of params.entries()){
+            ingredients[param[0]]=+param[1];
+        }
+
+        this.setState({ingredients});
+    }
+
     render(){
         return(
             <div>
