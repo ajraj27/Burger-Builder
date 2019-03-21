@@ -58,7 +58,7 @@ class ContactData extends Component{
                     {value:'cheapest',displayValue:'Cheapest'}
                 ]
                 },
-                value:''
+                value:'fastest'
             },
         },    
         loading:false
@@ -68,9 +68,16 @@ class ContactData extends Component{
     orderHandler=(e) => {
         e.preventDefault();
         this.setState({loading:true});
+        const formData={};
+
+        for(let key in this.state.orderForm){
+            formData[key]=this.state.orderForm[key].value;
+        }
+
         const order={
         ingredients:this.props.ingredients,
-         totalPrice:this.props.price
+         totalPrice:this.props.price,
+         orderData:formData
         }
 
         axios.post('/orders.json',order)
@@ -83,8 +90,18 @@ class ContactData extends Component{
 
     }
 
-    render(){
+    inputHandler=(e,inputKey) => {
+        const updatedOrderForm={...this.state.orderForm};
 
+        const updatedFormElement={...updatedOrderForm[inputKey]};
+        updatedFormElement.value=e.target.value;
+        updatedOrderForm[inputKey]=updatedFormElement;
+        this.setState({orderForm:updatedOrderForm});
+
+    }
+
+    render(){
+ 
         const formArray=[];
         for(let key in this.state.orderForm){
             formArray.push({
@@ -94,16 +111,17 @@ class ContactData extends Component{
         }
 
         let form=(
-            <form>
+            <form onSubmit={this.orderHandler}>
                 {formArray.map(el => (
                     <Input 
                     key={el.id}
                     elementType={el.config.elementType}
                     elementConfig={el.config.elementConfig} 
                     value={el.config.value}
+                    changed={(event) => this.inputHandler(event,el.id)}
                     />
                 ))}
-                <Button btnType="Success" clicked={this.orderHandler}>ORDER</Button>
+                <Button btnType="Success">ORDER</Button>
             </form>
             
         );
